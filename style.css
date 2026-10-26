@@ -265,8 +265,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 @keyframes starTurn { to { transform: rotate(360deg); } }
 .poster__star--1 { width: 19cqw; aspect-ratio: 1; right: 1cqw; top: 3cqh; }
 .poster__star--2 { width: 9cqw;  aspect-ratio: 1; left: 33cqw; top: 52cqh; }
-.poster__star--3 { width: 13cqw; aspect-ratio: 1; left: 55cqw; bottom: -3cqh; }
-.poster__star--4 { width: 5.5cqw; aspect-ratio: 1; left: 44cqw; top: 3cqh; }
+.poster__star--4 { width: 5cqw;  aspect-ratio: 1; left: 38.5cqw; top: 9.5cqh; }
 
 /* ── the name, big and tight, top left ── */
 .hero__title { position: absolute; z-index: 4; left: 3.4cqw; top: 7.5cqh; margin: 0; font-weight: inherit; }
@@ -279,7 +278,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   color: var(--cream); text-transform: lowercase;
 }
 .hero__headline .line { display: block; }
-.hero__headline .line--last { padding-left: .02em; }
+.hero__headline .line--last { padding-left: .62em; }   /* steps right so it runs into the photo grid */
 /* each letter swells toward the cursor (variable weight + width) */
 .hero__headline .ch {
   display: inline-block;
@@ -358,8 +357,8 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   .poster__meta .hide-sm { display: none; }
   .poster__star--1 { width: 26cqw; top: 56cqw; right: -5cqw; }
   .poster__star--2 { width: 15cqw; left: 4cqw; top: 70cqw; }
-  .poster__star--3 { width: 18cqw; left: auto; right: 6cqw; bottom: 12cqw; top: auto; }
-  .poster__star--4 { display: none; }
+  .poster__star--4 { width: 12cqw; left: auto; right: 8cqw; top: auto; bottom: 14cqw; }
+  .hero__headline .line--last { padding-left: .35em; }
 }
 
 /* ═══════════════════════════════════════════════════════
