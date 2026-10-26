@@ -409,6 +409,55 @@ const SKY = {
   })();
 })();
 
+/* ═══════════════════════════════════════════════════════
+   PHOTO SLICES — cuts the hero photo into thin strips that
+   sit at staggered heights and drift apart as you scroll
+   ═══════════════════════════════════════════════════════ */
+const PHOTO = {
+  slices: 15,            // how many strips
+  trueSlices: [9],       // strips that always show the real colours (0 = first)
+  wave: 18,              // px — how far the strips step up and down
+  scrollSpread: .09,     // how much they drift apart on scroll
+};
+(function photoSlices() {
+  const photo = document.getElementById('heroPhoto');
+  const holder = document.getElementById('heroSlices');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const n = PHOTO.slices;
+  const slices = [];
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('span');
+    s.className = 'slice' + (PHOTO.trueSlices.includes(i) ? ' slice--true' : '');
+    s.style.setProperty('--i', i);
+    holder.appendChild(s);
+    slices.push({ el: s, base: Math.sin(i * .9) * PHOTO.wave, speed: .4 + ((i * 37) % 10) / 10 });
+  }
+
+  function layout() {                       // line each strip up with its part of the photo
+    const gap = parseFloat(getComputedStyle(photo).getPropertyValue('--gap')) || 0;
+    const w = holder.clientWidth, h = holder.clientHeight;
+    const sw = (w - gap * (n - 1)) / n;
+    photo.style.setProperty('--bw', w + 'px');
+    photo.style.setProperty('--bh', h + 'px');
+    slices.forEach(({ el }, i) => el.style.setProperty('--bx', -(i * (sw + gap)) + 'px'));
+  }
+  function place() {
+    const y = reduce.matches ? 0 : Math.min(window.scrollY, window.innerHeight);
+    slices.forEach(s => s.el.style.setProperty('--y', (s.base + y * PHOTO.scrollSpread * s.speed * (s.base >= 0 ? 1 : -1)).toFixed(1) + 'px'));
+  }
+  let queued = false;
+  window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; place(); }); } }, { passive: true });
+  window.addEventListener('resize', layout);
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(holder);
+  reduce.addEventListener('change', place);
+  layout(); place();
+
+  // pause the ring planet for reduced motion
+  const rings = document.getElementById('ringsFront');
+  const syncRings = () => { if (rings.pauseAnimations) reduce.matches ? rings.pauseAnimations() : rings.unpauseAnimations(); };
+  reduce.addEventListener('change', syncRings); syncRings();
+})();
+
 /* STICKERS — quietly hide any sticker whose image file is missing */
 document.querySelectorAll('.sticker').forEach(img => {
   const hide = () => { img.style.display = 'none'; };
