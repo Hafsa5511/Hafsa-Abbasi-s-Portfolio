@@ -533,3 +533,28 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   .footer__constellation line { stroke-dashoffset: 0; }
   .footer__constellation circle { opacity: .85; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   STICKERS — little scrapbook cut-outs (transparent PNGs)
+   Size: --w   Tilt: --r   Position: top/left/right/bottom
+   ═══════════════════════════════════════════════════════ */
+.sticker {
+  position: absolute; z-index: 3;
+  width: var(--w, 110px); height: auto; max-width: none;
+  transform: rotate(var(--r, 0deg));
+  pointer-events: none; user-select: none;
+  filter: drop-shadow(0 8px 12px rgba(10, 2, 4, .45));   /* lifts them off the dark sky */
+}
+.sticker--on-light { filter: drop-shadow(0 6px 10px rgba(70, 20, 26, .22)); }
+
+/* anchors the stickers sit against */
+.hero__headline .line--name { position: relative; width: fit-content; }
+.about__heading, .about__figure, .section-head h2, .works__note,
+.gallery__text, .footer__heading .soft, .footer__contact, .footer__bottom { position: relative; }
+.footer__heading .soft { display: inline-block; }
+.footer__contact { display: inline-block; }
+
+@media (max-width: 900px) {
+  .sticker { width: calc(var(--w, 110px) * .7); }
+  .sticker--desktop { display: none; }
+}
