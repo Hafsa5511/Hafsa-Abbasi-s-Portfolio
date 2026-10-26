@@ -84,7 +84,7 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 1rem); }
 /* white lily, laid across the seam between the hero and About */
 .sticker--lily { top: 0; right: 9%; translate: 0 -22%; --size: clamp(9rem, 17vw, 15.5rem); --rot: -14deg; }
 /* cherry blossoms, stuck to the corner of the portrait */
-.sticker--blossoms { left: -22%; bottom: 9%; --size: 52%; --rot: 9deg; }
+.sticker--blossoms { left: 62%; right: auto; bottom: -8%; --size: 28%; --rot: -8deg; }
 /* hibiscus, above the note in Selected works */
 .sticker--hibiscus { position: relative; display: block; margin: 0 0 1.25rem -.75rem; --size: clamp(8rem, 13vw, 12rem); --rot: -9deg; }
 /* pink lilies, tucked over the corner of the gallery collage */
@@ -581,5 +581,15 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   .footer__constellation line { stroke-dashoffset: 0; }
   .footer__constellation circle { opacity: .85; }
 }
-.about__photo { --gap: 3px; position: relative; aspect-ratio: 4 / 3; }
+/* ═══ About: big ocean grid — bleeds off the right edge, breaks into pixels on the left ═══ */
+.about__figure { grid-column: 8 / 13; align-self: center; margin: 0; }
+.about__photo { --gap: 4px; position: relative; width: min(62vw, 58rem); }   /* wider than its column, so it runs off the page */
 .about__tiles { position: absolute; inset: 0; display: grid; gap: var(--gap); }
+.about__tiles .tile { transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--s, 1)); }
+.about__tiles .pixel { position: absolute; }
+.sticker--blossoms { left: 6%; bottom: -12%; --size: 30%; }
+
+@media (max-width: 900px) {
+  .about__figure { grid-column: 1 / -1; max-width: none; }
+  .about__photo { width: 120%; margin-left: 12%; }
+}

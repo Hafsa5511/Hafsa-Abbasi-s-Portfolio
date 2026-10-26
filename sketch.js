@@ -439,36 +439,74 @@ document.getElementById('year').textContent = new Date().getFullYear();
 /* ═══════════════════════════════════════════════════════
    FLOWER GRID — the About photo, cut into small squares
    ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   FLOWER GRID — the About photo: big squares that run off the
+   right edge and break apart into loose pixels on the left
+   ═══════════════════════════════════════════════════════ */
 const FLOWER_GRID = {
-  cols: 8, rows: 6,       // 8 × 6 squares for a 4:3 (landscape) photo
-  gone: [0, 15, 41],      // squares left empty — use [] for none
+  cols: 6, rows: 4,       // fewer, bigger squares (the grid's shape follows these: 6 × 4 = 3:2)
+  // squares that break away: number: [x, y, size] — x/y in square-widths (negative x = left), size 1 = full
+  scatter: { 0: [-0.5, -0.2, .5], 1: [-0.15, -0.55, .26], 13: [-0.05, 0.05, .2], 18: [-0.4, 0.3, .45] },
+  pixels: 8,              // tiny loose squares drifting off the left edge
+  pixelReach: .85,        // how far left they spread, in square-widths
 };
 (function flowerGrid() {
   const photo = document.getElementById('aboutPhoto');
   const holder = document.getElementById('aboutTiles');
   if (!photo || !holder) return;
-  const { cols, rows, gone } = FLOWER_GRID;
+  const { cols, rows, scatter, pixels, pixelReach } = FLOWER_GRID;
+  photo.style.aspectRatio = `${cols} / ${rows}`;
   holder.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
   holder.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
   const tiles = [];
   for (let i = 0; i < cols * rows; i++) {
     const t = document.createElement('span');
-    t.className = 'tile' + (gone.includes(i) ? ' tile--gone' : '');
+    t.className = 'tile';
     holder.appendChild(t);
     tiles.push(t);
   }
-  function layout() {                     // line each square up with its part of the photo
+  // tiny pixels, placed the same way every time
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  const dust = Array.from({ length: pixels }, () => {
+    const p = document.createElement('span');
+    p.className = 'tile pixel';
+    holder.appendChild(p);
+    return { el: p, x: -pixelReach + rnd() * (pixelReach + .15), y: .4 + rnd() * (rows - .9), size: .06 + rnd() * .13 };
+  });
+
+  // read the image's real size so it's cropped like "cover", never stretched
+  const src = (getComputedStyle(photo).getPropertyValue('--img').match(/url\(["']?(.*?)["']?\)/) || [])[1];
+  const img = new Image();
+  img.onload = layout;
+  img.src = src;
+
+  function layout() {
     const gap = parseFloat(getComputedStyle(holder).columnGap) || 0;
     const w = holder.clientWidth, h = holder.clientHeight;
+    if (!w || !img.naturalWidth) return;
+    const k = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+    const bw = img.naturalWidth * k, bh = img.naturalHeight * k;
+    const ox = (w - bw) / 2, oy = (h - bh) / 2;            // centre the crop
     const tw = (w - gap * (cols - 1)) / cols, th = (h - gap * (rows - 1)) / rows;
-    photo.style.setProperty('--bw', w + 'px');
-    photo.style.setProperty('--bh', h + 'px');
+    photo.style.setProperty('--bw', bw + 'px');
+    photo.style.setProperty('--bh', bh + 'px');
     tiles.forEach((t, i) => {
-      t.style.setProperty('--bx', -((i % cols) * (tw + gap)) + 'px');
-      t.style.setProperty('--by', -(Math.floor(i / cols) * (th + gap)) + 'px');
+      const c = i % cols, r = Math.floor(i / cols);
+      t.style.setProperty('--bx', ox - c * (tw + gap) + 'px');
+      t.style.setProperty('--by', oy - r * (th + gap) + 'px');
+      const s = scatter[i];
+      t.style.setProperty('--tx', s ? s[0] * tw + 'px' : '0px');
+      t.style.setProperty('--ty', s ? s[1] * th + 'px' : '0px');
+      t.style.setProperty('--s', s ? s[2] : 1);
+    });
+    dust.forEach(d => {
+      const size = d.size * tw, x = d.x * tw, y = d.y * th;
+      Object.assign(d.el.style, { width: size + 'px', height: size + 'px', left: x + 'px', top: y + 'px' });
+      d.el.style.setProperty('--bx', ox - Math.max(0, x + tw * .3) + 'px');   // shows the bit of photo it "came from"
+      d.el.style.setProperty('--by', oy - y + 'px');
     });
   }
   window.addEventListener('resize', layout);
   if ('ResizeObserver' in window) new ResizeObserver(layout).observe(holder);
-  layout();
 })();
