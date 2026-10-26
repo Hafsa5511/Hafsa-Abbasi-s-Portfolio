@@ -1,0 +1,18 @@
+Drop your sticker PNGs in this folder (transparent backgrounds).
+Use these exact file names:
+
+birds-flock.png        flock of little birds
+sparkles-gold.png      gold four-point sparkles
+paper-star.png         torn paper star
+ribbon-cream.png       cream satin ribbon
+clover-pressed.png     pressed flowers with tape
+lily-white.png         white textured lily
+star-sun-gold.png      gold starburst with spiral
+clip-wood.png          wooden binder clip
+swans-pair.png         two swans
+cherry-blossoms.png    white blossoms
+lily-red.png           red lily
+stars-origami.png      origami stars
+fawn.png               resting fawn
+
+You can delete this text file once your images are in.
