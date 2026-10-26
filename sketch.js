@@ -409,35 +409,11 @@ const SKY = {
   })();
 })();
 
-/* ═══════════════════════════════════════════════════════
-   STICKERS — hide any whose image isn't there yet, and let
-   them drift a touch on scroll for a layered, scrapbook feel
-   ═══════════════════════════════════════════════════════ */
-(function stickers() {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const all = [...document.querySelectorAll('.sticker')];
-  all.forEach(img => {
-    const hide = () => img.remove();
-    if (img.complete && img.naturalWidth === 0) hide();
-    else img.addEventListener('error', hide);
-  });
-
-  let queued = false;
-  function drift() {
-    queued = false;
-    const mid = window.innerHeight / 2;
-    document.querySelectorAll('.sticker').forEach(img => {
-      const speed = parseFloat(img.dataset.drift) || 0;
-      if (!speed || reduce.matches) { img.style.translate = ''; return; }
-      const r = img.getBoundingClientRect();
-      const prev = parseFloat(img.dataset.offset) || 0;            // remove last drift before measuring
-      const offset = (r.top - prev + r.height / 2 - mid) * speed;
-      img.dataset.offset = offset;
-      img.style.translate = `0 ${offset.toFixed(1)}px`;
-    });
-  }
-  window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(drift); } }, { passive: true });
-  window.addEventListener('load', drift);
-})();
+/* STICKERS — quietly hide any sticker whose image file is missing */
+document.querySelectorAll('.sticker').forEach(img => {
+  const hide = () => { img.style.display = 'none'; };
+  if (img.complete && img.naturalWidth === 0) hide();
+  else img.addEventListener('error', hide);
+});
 
 document.getElementById('year').textContent = new Date().getFullYear();

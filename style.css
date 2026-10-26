@@ -73,6 +73,35 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 1rem); }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .43  1.2 0 0 0 -.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 200px 200px;
 }
+/* ═══ SCRAPBOOK STICKERS ═══════════════════════════════
+   Transparent PNGs placed like stickers. Change --size and
+   --rot on each one in the HTML to resize or re-tilt it.   */
+.sticker {
+  position: absolute; z-index: 3; pointer-events: none; user-select: none;
+  width: var(--size, 10rem); height: auto;
+  transform: rotate(var(--rot, 0deg));
+  filter: drop-shadow(0 14px 18px rgba(26, 8, 11, .35)) drop-shadow(0 2px 3px rgba(26, 8, 11, .25));
+}
+/* white lily, laid across the seam between the hero and About */
+.sticker--lily { top: 0; left: 50%; translate: -50% -55%; --size: clamp(9rem, 17vw, 15.5rem); --rot: -14deg; }
+/* cherry blossoms, stuck to the corner of the portrait */
+.sticker--blossoms { left: -22%; bottom: 9%; --size: 52%; --rot: 9deg; }
+/* hibiscus, above the note in Selected works */
+.sticker--hibiscus { position: relative; display: block; margin: 0 0 1.25rem -.75rem; --size: clamp(8rem, 13vw, 12rem); --rot: -9deg; }
+/* pink lilies, tucked over the corner of the gallery collage */
+.sticker--pinklilies { right: -3%; bottom: -6%; z-index: 6; --size: 36%; --rot: 7deg; }
+/* gold sparkle stars, at the end of the footer heading */
+.sticker--stars { right: -.85em; top: -.55em; --size: .85em; --rot: 10deg; }
+
+.about__figure, .works__note, .footer__heading .soft { position: relative; }
+.footer__heading .soft { display: inline-block; }
+
+@media (max-width: 900px) {
+  .sticker--lily { left: auto; right: 4%; translate: 0 -55%; --size: clamp(7rem, 30vw, 10rem); }
+  .sticker--blossoms { left: -10%; --size: 40%; }
+  .sticker--pinklilies { --size: 42%; bottom: -10%; }
+}
+
 /* custom cursor (mouse/trackpad only) */
 html.has-cursor, html.has-cursor * { cursor: none !important; }
 .cursor-star, .cursor-ring {
@@ -532,29 +561,4 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   .hero__scroll-line::after { top: 30%; }
   .footer__constellation line { stroke-dashoffset: 0; }
   .footer__constellation circle { opacity: .85; }
-}
-
-/* ═══════════════════════════════════════════════════════
-   STICKERS — little scrapbook cut-outs (transparent PNGs)
-   Size: --w   Tilt: --r   Position: top/left/right/bottom
-   ═══════════════════════════════════════════════════════ */
-.sticker {
-  position: absolute; z-index: 3;
-  width: var(--w, 110px); height: auto; max-width: none;
-  transform: rotate(var(--r, 0deg));
-  pointer-events: none; user-select: none;
-  filter: drop-shadow(0 8px 12px rgba(10, 2, 4, .45));   /* lifts them off the dark sky */
-}
-.sticker--on-light { filter: drop-shadow(0 6px 10px rgba(70, 20, 26, .22)); }
-
-/* anchors the stickers sit against */
-.hero__headline .line--name { position: relative; width: fit-content; }
-.about__heading, .about__figure, .section-head h2, .works__note,
-.gallery__text, .footer__heading .soft, .footer__contact, .footer__bottom { position: relative; }
-.footer__heading .soft { display: inline-block; }
-.footer__contact { display: inline-block; }
-
-@media (max-width: 900px) {
-  .sticker { width: calc(var(--w, 110px) * .7); }
-  .sticker--desktop { display: none; }
 }
