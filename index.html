@@ -50,74 +50,82 @@
 <main id="main">
 
   <!-- ═══ HERO ═════════════════════════════════════════════
-       The photo is sliced by the script (see PHOTO in the JS).
-       Hover it: the slices line up and the real colours show. -->
+       A poster: the photo is cut into tiles by the script (GRID in the JS).
+       The tiles stay still; edit GRID in the script to rearrange them. -->
   <section class="hero" aria-labelledby="hero-title">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <!-- roughens edges so shapes look hand-cut / printed -->
+      <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".055" numOctaves="3" seed="4"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
+    </svg>
+    <div class="poster">
+      <div class="poster__meta poster__meta--top">
+        <span>Hafsa Abbasi</span>
+        <span class="hide-sm"><em>portfolio</em></span>
+        <span>GBDA / Waterloo</span>
+      </div>
 
-    <figure class="hero__photo" id="heroPhoto"
-            style="--duo: url('assets/images/mountain-duotone.jpg'); --true: url('assets/images/mountain.jpg');">
-      <svg class="hero__rings hero__rings--back" viewBox="0 0 1000 400" aria-hidden="true">
-        <g class="ring-tilt">
-          <ellipse cx="500" cy="200" rx="380" ry="62" stroke-opacity=".7"/>
-          <ellipse class="ring-dash" cx="500" cy="200" rx="425" ry="70" stroke-opacity=".6"/>
-          <ellipse cx="500" cy="200" rx="470" ry="78" stroke-opacity=".32"/>
-        </g>
-      </svg>
-
-      <div class="hero__slices" id="heroSlices" role="img" aria-label="An aerial photograph of snow-capped mountains, taken from a plane window"></div>
-
-      <svg class="hero__rings hero__rings--front" id="ringsFront" viewBox="0 0 1000 400" aria-hidden="true">
-        <defs><clipPath id="ringFrontClip"><rect x="0" y="200" width="1000" height="220"/></clipPath></defs>
-        <g class="ring-tilt">
-          <g clip-path="url(#ringFrontClip)">
-            <ellipse cx="500" cy="200" rx="380" ry="62" stroke-opacity=".7"/>
-            <ellipse class="ring-dash" cx="500" cy="200" rx="425" ry="70" stroke-opacity=".6"/>
-            <ellipse cx="500" cy="200" rx="470" ry="78" stroke-opacity=".32"/>
-            <circle r="4" fill="#D7C39B">
-              <animateMotion dur="44s" repeatCount="indefinite" path="M75 200 a425 70 0 1 0 850 0 a425 70 0 1 0 -850 0"/>
-            </circle>
+      <figure class="hero__photo" id="heroPhoto"
+              style="--img: url('assets/images/mountain.jpg');">
+        <svg class="hero__rings hero__rings--back" viewBox="0 0 1000 400" aria-hidden="true">
+          <g class="ring-tilt">
+            <ellipse cx="500" cy="200" rx="380" ry="62" stroke-opacity=".75"/>
+            <ellipse class="ring-dash" cx="500" cy="200" rx="425" ry="70" stroke-opacity=".7"/>
+            <ellipse cx="500" cy="200" rx="470" ry="78" stroke-opacity=".35"/>
           </g>
-        </g>
-      </svg>
-      <figcaption class="hero__credit">Photographed from a plane window</figcaption>
-    </figure>
+        </svg>
+        <div class="hero__tiles" id="heroTiles" role="img" aria-label="An aerial photograph of snow-capped mountains, taken from a plane window"></div>
+        <svg class="hero__rings hero__rings--front" id="ringsFront" viewBox="0 0 1000 400" aria-hidden="true">
+          <defs><clipPath id="ringFrontClip"><rect x="0" y="200" width="1000" height="220"/></clipPath></defs>
+          <g class="ring-tilt">
+            <g clip-path="url(#ringFrontClip)">
+              <ellipse cx="500" cy="200" rx="380" ry="62" stroke-opacity=".75"/>
+              <ellipse class="ring-dash" cx="500" cy="200" rx="425" ry="70" stroke-opacity=".7"/>
+              <ellipse cx="500" cy="200" rx="470" ry="78" stroke-opacity=".35"/>
+              <circle r="4.5" fill="#EFDFD2">
+                <animateMotion dur="44s" repeatCount="indefinite" path="M75 200 a425 70 0 1 0 850 0 a425 70 0 1 0 -850 0"/>
+              </circle>
+            </g>
+          </g>
+        </svg>
+      </figure>
 
-    <div class="hero__copy">
       <h1 class="hero__title" id="hero-title">
         <span class="sr-only">Hafsa Abbasi, designer and illustrator</span>
-        <span class="hero__name" aria-hidden="true">Designer and illustrator</span>
         <span class="hero__headline" aria-hidden="true">
-          <span class="line line--name"><span class="ch" style="--i:0">H</span><span class="ch" style="--i:1">a</span><span class="ch" style="--i:2">f</span><span class="ch" style="--i:3">s</span><span class="ch" style="--i:4">a</span></span>
-          <span class="line line--serif">Abbasi</span>
+          <span class="line line--name"><span class="ch" style="--i:0">h</span><span class="ch" style="--i:1">a</span><span class="ch" style="--i:2">f</span><span class="ch" style="--i:3">s</span><span class="ch" style="--i:4">a</span></span>
+          <span class="line line--last"><span class="ch" style="--i:5">a</span><span class="ch" style="--i:6">b</span><span class="ch" style="--i:7">b</span><span class="ch" style="--i:8">a</span><span class="ch" style="--i:9">s</span><span class="ch" style="--i:10">i</span></span>
         </span>
       </h1>
+
+      <p class="hero__tagline">designs with <em>intention.</em></p>
+
       <div class="hero__about">
-        <p class="hero__roles">UX/UI<span class="dot" aria-hidden="true">·</span>Graphic Design<span class="dot" aria-hidden="true">·</span>Illustration</p>
-        <p class="hero__intro">I’m a GBDA student at the University of Waterloo, creating designs that look good, feel intuitive, and don’t make users question their life choices.</p>
+        <blockquote class="hero__quote">
+          <p>“Actions are judged by intentions.”</p>
+          <p lang="ar" dir="rtl">إنّما الأعمال بالنيّات</p>
+        </blockquote>
+        <p class="hero__intro">I’m a GBDA student at the University of Waterloo working in UX/UI, graphic design and illustration, creating designs that look good, feel intuitive, and don’t make users question their life choices.</p>
+      </div>
+
+      <div class="poster__star poster__star--1" aria-hidden="true"><svg viewBox="-100 -100 200 200"><path d="M64.3 -2.7 L14.4 6.6 L50.5 51.4 L9.3 17.2 L8.3 74.1 L-4.6 15.3 L-61.6 63.9 L-15.2 7.9 L-93.1 -2.8 L-17.0 -7.4 L-37.7 -47.4 L-5.3 -16.9 L-5.4 -62.9 L7.5 -20.9 L52.0 -60.7 L17.2 -6.5Z" fill="currentColor" filter="url(#rough)"/></svg></div>
+      <div class="poster__star poster__star--2" aria-hidden="true"><svg viewBox="-100 -100 200 200"><path d="M69.9 6.3 L15.4 9.9 L36.4 66.0 L-1.7 20.9 L-41.0 72.0 L-15.4 11.2 L-94.7 -3.3 L-13.1 -9.0 L-43.5 -70.7 L-2.0 -17.1 L27.1 -57.0 L15.8 -11.5Z" fill="currentColor" filter="url(#rough)"/></svg></div>
+      <div class="poster__star poster__star--3" aria-hidden="true"><svg viewBox="-100 -100 200 200"><path d="M67.6 -6.0 L23.6 7.9 L62.1 42.3 L12.3 21.8 L8.8 89.7 L-2.5 20.5 L-42.7 80.1 L-15.1 10.1 L-61.2 27.8 L-21.2 1.4 L-63.7 -24.8 L-17.3 -11.3 L-41.8 -67.4 L-1.5 -23.2 L14.4 -79.9 L9.2 -14.5 L71.7 -49.3 L23.4 -6.2Z" fill="currentColor" filter="url(#rough)"/></svg></div>
+      <div class="poster__star poster__star--4" aria-hidden="true"><svg viewBox="-100 -100 200 200"><path d="M61.2 0.7 L19.2 6.8 L43.8 60.1 L6.4 23.4 L-14.7 68.1 L-17.2 18.7 L-69.5 38.9 L-27.2 -0.2 L-60.7 -33.5 L-10.3 -16.5 L-20.8 -83.7 L3.3 -23.0 L44.3 -70.2 L22.4 -9.1Z" fill="currentColor" filter="url(#rough)"/></svg></div>
+
+      <div class="poster__meta poster__meta--bottom">
+        <a href="#about">Scroll ↓</a>
+        <span class="hide-sm">UX/UI · Graphic design · Illustration</span>
+        <span class="hero__moon">
+          <button class="hero__moon-btn" id="wishPlanet" type="button" title="Make a wish" aria-label="Tonight’s moon. Click to make a wish.">
+            <svg viewBox="0 0 400 400" aria-hidden="true">
+              <circle cx="200" cy="200" r="190" fill="#4A0B14" stroke="#EFDFD2" stroke-opacity=".6" stroke-width="14"/>
+              <path id="moonLit" fill="#EFDFD2" d=""/>
+            </svg>
+          </button>
+          <p id="moonCaption"></p>
+        </span>
       </div>
     </div>
-
-    <div class="hero__side">
-      <blockquote class="hero__quote">
-        <p>“Actions are judged by intentions.”</p>
-        <p lang="ar" dir="rtl">إنّما الأعمال بالنيّات</p>
-      </blockquote>
-      <div class="hero__moon">
-        <button class="hero__moon-btn" id="wishPlanet" type="button" title="Make a wish" aria-label="Tonight’s moon. Click to make a wish.">
-          <svg viewBox="0 0 400 400" aria-hidden="true">
-            <circle cx="200" cy="200" r="190" fill="#350A12" stroke="#EFDFD2" stroke-opacity=".35" stroke-width="10"/>
-            <!-- lit part of tonight's moon; shape is set by the script -->
-            <path id="moonLit" fill="#EFDFD2" fill-opacity=".92" d=""/>
-          </svg>
-        </button>
-        <p id="moonCaption"></p>
-      </div>
-    </div>
-
-    <a class="hero__scroll" href="#about">
-      <span class="hero__scroll-line" aria-hidden="true"></span>
-      Scroll to explore
-    </a>
   </section>
 
   <!-- ═══ ABOUT ════════════════════════════════════════════ -->

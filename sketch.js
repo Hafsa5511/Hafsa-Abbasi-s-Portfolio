@@ -339,7 +339,7 @@ const SKY = {
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   const letters = [...document.querySelectorAll('.hero__headline .ch')];
   const first = document.querySelector('.hero__headline .line--name');
-  const second = document.querySelector('.hero__headline .line--serif');
+  const second = document.querySelector('.hero__headline .line--last');
   const REACH = 320;                       // px — how far the cursor's pull extends
   let mx = -1e4, my = -1e4, swellQueued = false, driftQueued = false;
 
@@ -349,8 +349,8 @@ const SKY = {
       const r = l.getBoundingClientRect();
       const d = Math.hypot(mx - (r.left + r.width / 2), my - (r.top + r.height / 2));
       const k = Math.max(0, 1 - d / REACH);
-      l.style.setProperty('--wt', Math.round(600 + 200 * k));      // 600 → 800
-      l.style.setProperty('--wd', (88 + 12 * k).toFixed(1));        // 88 → 100
+      l.style.setProperty('--wt', Math.round(700 + 100 * k));      // 700 → 800
+      l.style.setProperty('--wd', (92 + 8 * k).toFixed(1));         // 92 → 100
     });
   }
   window.addEventListener('pointermove', e => {
@@ -410,40 +410,47 @@ const SKY = {
 })();
 
 /* ═══════════════════════════════════════════════════════
-   PHOTO SLICES — cuts the hero photo into thin strips that
-   sit at staggered heights and drift apart as you scroll
+   PHOTO GRID — cuts the hero photo into square tiles, a few
+   nudged out of line like a pasted-up poster
    ═══════════════════════════════════════════════════════ */
-const PHOTO = {
-  slices: 15,            // how many strips
-  trueSlices: [9],       // strips that always show the real colours (0 = first)
-  wave: 18,              // px — how far the strips step up and down
-  scrollSpread: .09,     // how much they drift apart on scroll
+const GRID = {
+  cols: 3, rows: 4,       // 3 × 4 squares for a 3:4 photo
+  gone: [0],              // tiles left empty (the poster shows through) — use [] for none
+  nudge: {},              // optional offsets, e.g. { 4: [10, 0] } moves tile 4 right 10px
+  scrollSpread: 0,        // 0 = tiles stay still when scrolling
 };
-(function photoSlices() {
+(function photoGrid() {
   const photo = document.getElementById('heroPhoto');
-  const holder = document.getElementById('heroSlices');
+  const holder = document.getElementById('heroTiles');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const n = PHOTO.slices;
-  const slices = [];
-  for (let i = 0; i < n; i++) {
-    const s = document.createElement('span');
-    s.className = 'slice' + (PHOTO.trueSlices.includes(i) ? ' slice--true' : '');
-    s.style.setProperty('--i', i);
-    holder.appendChild(s);
-    slices.push({ el: s, base: Math.sin(i * .9) * PHOTO.wave, speed: .4 + ((i * 37) % 10) / 10 });
+  holder.style.gridTemplateColumns = `repeat(${GRID.cols}, 1fr)`;
+  holder.style.gridTemplateRows = `repeat(${GRID.rows}, 1fr)`;
+  const tiles = [];
+  for (let i = 0; i < GRID.cols * GRID.rows; i++) {
+    const t = document.createElement('span');
+    t.className = 'tile' + (GRID.gone.includes(i) ? ' tile--gone' : '') + '';
+    t.style.setProperty('--i', i);
+    holder.appendChild(t);
+    const [nx, ny] = GRID.nudge[i] || [0, 0];
+    tiles.push({ el: t, nx, ny, dir: (i % 2 ? 1 : -1) * (1 + (i % 3) * .5) });
   }
-
-  function layout() {                       // line each strip up with its part of the photo
-    const gap = parseFloat(getComputedStyle(photo).getPropertyValue('--gap')) || 0;
+  function layout() {                 // line each tile up with its part of the photo
+    const gap = parseFloat(getComputedStyle(holder).columnGap) || 0;
     const w = holder.clientWidth, h = holder.clientHeight;
-    const sw = (w - gap * (n - 1)) / n;
+    const tw = (w - gap * (GRID.cols - 1)) / GRID.cols, th = (h - gap * (GRID.rows - 1)) / GRID.rows;
     photo.style.setProperty('--bw', w + 'px');
     photo.style.setProperty('--bh', h + 'px');
-    slices.forEach(({ el }, i) => el.style.setProperty('--bx', -(i * (sw + gap)) + 'px'));
+    tiles.forEach(({ el }, i) => {
+      el.style.setProperty('--bx', -((i % GRID.cols) * (tw + gap)) + 'px');
+      el.style.setProperty('--by', -(Math.floor(i / GRID.cols) * (th + gap)) + 'px');
+    });
   }
   function place() {
-    const y = reduce.matches ? 0 : Math.min(window.scrollY, window.innerHeight);
-    slices.forEach(s => s.el.style.setProperty('--y', (s.base + y * PHOTO.scrollSpread * s.speed * (s.base >= 0 ? 1 : -1)).toFixed(1) + 'px'));
+    const y = reduce.matches ? 0 : Math.min(window.scrollY, window.innerHeight) * GRID.scrollSpread;
+    tiles.forEach(t => {
+      t.el.style.setProperty('--tx', t.nx + 'px');
+      t.el.style.setProperty('--ty', (t.ny + y * t.dir).toFixed(1) + 'px');
+    });
   }
   let queued = false;
   window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; place(); }); } }, { passive: true });
@@ -452,7 +459,6 @@ const PHOTO = {
   reduce.addEventListener('change', place);
   layout(); place();
 
-  // pause the ring planet for reduced motion
   const rings = document.getElementById('ringsFront');
   const syncRings = () => { if (rings.pauseAnimations) reduce.matches ? rings.pauseAnimations() : rings.unpauseAnimations(); };
   reduce.addEventListener('change', syncRings); syncRings();
