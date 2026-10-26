@@ -114,15 +114,7 @@
       <div class="poster__meta poster__meta--bottom">
         <a href="#about">Scroll ↓</a>
         <span class="hide-sm">UX/UI · Graphic design · Illustration</span>
-        <span class="hero__moon">
-          <button class="hero__moon-btn" id="wishPlanet" type="button" title="Make a wish" aria-label="Tonight’s moon. Click to make a wish.">
-            <svg viewBox="0 0 400 400" aria-hidden="true">
-              <circle cx="200" cy="200" r="190" fill="#4A0B14" stroke="#EFDFD2" stroke-opacity=".6" stroke-width="14"/>
-              <path id="moonLit" fill="#EFDFD2" d=""/>
-            </svg>
-          </button>
-          <p id="moonCaption"></p>
-        </span>
+    
       </div>
     </div>
   </section>
@@ -131,34 +123,30 @@
   <section class="about" id="about" data-cursor="light" aria-labelledby="about-title">
     <img class="sticker sticker--lily" src="assets/images/white-lily.png" alt="" aria-hidden="true">
     <div class="wrap about__grid">
-      <h2 class="about__heading" id="about-title">I make things that make people feel something.</h2>
+      <h2 class="about__heading" id="about-title">Designer & illustrator exploring the digital and visual world.</h2>
 
       <div class="about__body">
-        <p class="lede">Part designer, part illustrator, mostly someone who notices small details.</p>
-        <p>Placeholder: I’m drawn to the space where problem-solving meets storytelling, whether that’s untangling a confusing user flow, building an identity from scratch, or drawing something just because it wouldn’t leave my head.</p>
-        <p>Placeholder: I study Global Business and Digital Arts at the University of Waterloo, which means I care about why a design works, not just how it looks.</p>
+        <p class="lede">Interested in visual design, digital experiences, and illustration.</p>
+        <p>I'm a Global Business and Digital Arts student at the University of Waterloo with an interest in graphic design, UX/UI, and illustration. I enjoy exploring different visual styles, experimenting with ideas, and finding the right balance between how something looks and how it works.</p>
+        <p>My work ranges from digital design to more personal illustration projects, with each giving me a different way to explore my interests and develop my skills.</p>
 
         <dl class="about__facts">
           <div><dt>Studying</dt><dd>GBDA, University of Waterloo</dd></div>
-          <div><dt>Focus</dt><dd>Digital experiences and visual storytelling</dd></div>
+          <div><dt>Focus</dt><dd>UX/UI, Graphic design, illustration</dd></div>
           <div><dt>Tools</dt><dd>Figma, Adobe Creative Cloud, HTML/CSS</dd></div>
         </dl>
 
-        <!-- Point this at your future About page -->
-        <a class="text-link" href="about.html">More about me <span aria-hidden="true">↗</span></a>
+       
       </div>
 
       <figure class="about__figure">
         <img class="sticker sticker--blossoms" src="assets/images/cherry-blossoms.png" alt="" aria-hidden="true">
-        <div class="about__portrait">
-          <!-- Replace this SVG with: <img src="portrait.jpg" alt="Hafsa Abbasi"> -->
-          <svg viewBox="0 0 300 390" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true">
-            <circle cx="150" cy="150" r="58" fill="#C98A86" fill-opacity=".35"/>
-            <path d="M60 390 C70 290 110 250 150 250 C190 250 230 290 240 390 Z" fill="#C98A86" fill-opacity=".35"/>
-            <g fill="#D7C39B"><circle cx="70" cy="80" r="1.4"/><circle cx="232" cy="64" r="1"/><circle cx="246" cy="138" r="1.6"/><circle cx="52" cy="190" r="1"/></g>
-          </svg>
+         <!-- flower photo, cut into a grid of small squares (see FLOWER_GRID in the script) -->
+        <div class="about__photo" id="aboutPhoto" style="--img: url('assets/images/flower.jpg');">
+          <div class="about__tiles" id="aboutTiles" role="img" aria-label="A flower, cut into a grid of small squares"></div>
         </div>
-        <figcaption>Portrait or self-illustration goes here</figcaption>
+        </div>
+        
       </figure>
     </div>
   </section>

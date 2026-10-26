@@ -293,42 +293,6 @@ const SKY = {
   io.observe(el);
 })();
 
-/* ═══════════════════════════════════════════════════════
-   TONIGHT'S MOON — shades the orbit circle to today's phase
-   ═══════════════════════════════════════════════════════ */
-(function moon() {
-  const SYNODIC = 29.530588853;                          // days per lunar cycle
-  const KNOWN_NEW = Date.UTC(2000, 0, 6, 18, 14);        // a known new moon
-  const days = (Date.now() - KNOWN_NEW) / 864e5;
-  const phase = ((days / SYNODIC) % 1 + 1) % 1;          // 0 new → .5 full → 1 new
-  const lit = (1 - Math.cos(2 * Math.PI * phase)) / 2;   // fraction illuminated
-  const waxing = phase < .5;
-
-  const names = [[.0339, 'new moon'], [.216, 'waxing crescent'], [.284, 'first quarter'], [.466, 'waxing gibbous'],
-                 [.534, 'full moon'], [.716, 'waning gibbous'], [.784, 'last quarter'], [.966, 'waning crescent'], [1, 'new moon']];
-  const name = names.find(([max]) => phase < max)[1];
-
-  // Lit shape: the bright limb is a half circle, the terminator a half ellipse
-  const cx = 200, cy = 200, r = 190, rx = r * Math.abs(2 * lit - 1);
-  const limbSweep = waxing ? 1 : 0;                      // waxing lights the right side (northern sky)
-  const termSweep = waxing ? (lit < .5 ? 0 : 1) : (lit < .5 ? 1 : 0);
-  document.getElementById('moonLit').setAttribute('d',
-    `M${cx} ${cy - r} A${r} ${r} 0 0 ${limbSweep} ${cx} ${cy + r} A${rx} ${r} 0 0 ${termSweep} ${cx} ${cy - r}Z`);
-
-  document.getElementById('moonCaption').textContent =
-    `Tonight’s moon: ${name}, ${Math.round(lit * 100)}% lit`;
-})();
-
-/* ═══════════════════════════════════════════════════════
-   EASTER EGG — click the gold planet to send a shooting star
-   ═══════════════════════════════════════════════════════ */
-(function wish() {
-  const planet = document.getElementById('wishPlanet');
-  planet.addEventListener('click', () => {
-    const r = planet.getBoundingClientRect();
-    if (window.wishOnStar) window.wishOnStar(r.left + r.width / 2, r.top + r.height / 2);
-  });
-})();
 
 /* ═══════════════════════════════════════════════════════
    DYNAMIC NAME — letters swell toward the cursor; the two
@@ -472,3 +436,39 @@ document.querySelectorAll('.sticker').forEach(img => {
 });
 
 document.getElementById('year').textContent = new Date().getFullYear();
+/* ═══════════════════════════════════════════════════════
+   FLOWER GRID — the About photo, cut into small squares
+   ═══════════════════════════════════════════════════════ */
+const FLOWER_GRID = {
+  cols: 8, rows: 6,       // 8 × 6 squares for a 4:3 (landscape) photo
+  gone: [0, 15, 41],      // squares left empty — use [] for none
+};
+(function flowerGrid() {
+  const photo = document.getElementById('aboutPhoto');
+  const holder = document.getElementById('aboutTiles');
+  if (!photo || !holder) return;
+  const { cols, rows, gone } = FLOWER_GRID;
+  holder.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  holder.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+  const tiles = [];
+  for (let i = 0; i < cols * rows; i++) {
+    const t = document.createElement('span');
+    t.className = 'tile' + (gone.includes(i) ? ' tile--gone' : '');
+    holder.appendChild(t);
+    tiles.push(t);
+  }
+  function layout() {                     // line each square up with its part of the photo
+    const gap = parseFloat(getComputedStyle(holder).columnGap) || 0;
+    const w = holder.clientWidth, h = holder.clientHeight;
+    const tw = (w - gap * (cols - 1)) / cols, th = (h - gap * (rows - 1)) / rows;
+    photo.style.setProperty('--bw', w + 'px');
+    photo.style.setProperty('--bh', h + 'px');
+    tiles.forEach((t, i) => {
+      t.style.setProperty('--bx', -((i % cols) * (tw + gap)) + 'px');
+      t.style.setProperty('--by', -(Math.floor(i / cols) * (th + gap)) + 'px');
+    });
+  }
+  window.addEventListener('resize', layout);
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(holder);
+  layout();
+})();
