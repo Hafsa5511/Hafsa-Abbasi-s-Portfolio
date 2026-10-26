@@ -51,36 +51,6 @@
 
   <!-- ═══ HERO ═════════════════════════════════════════════ -->
   <section class="hero" aria-labelledby="hero-title">
-    <div class="hero__orbit-wrap">
-    <svg class="hero__orbit" viewBox="0 0 400 400" aria-hidden="true">
-      <defs>
-        <radialGradient id="moonLight" cx=".5" cy=".5" r=".6">
-          <stop offset="0" stop-color="#EFDFD2" stop-opacity=".07"/><stop offset="1" stop-color="#EFDFD2" stop-opacity=".025"/>
-        </radialGradient>
-        <filter id="moonBlur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7"/></filter>
-      </defs>
-      <!-- lit part of tonight's moon; shape is set by the script -->
-      <use href="#moonLit" fill="none" stroke="#EFDFD2" stroke-opacity=".11" stroke-width="12" filter="url(#moonBlur)"/>
-      <path id="moonLit" fill="url(#moonLight)" d=""/>
-      <circle cx="200" cy="200" r="190" fill="none" stroke="#C98A86" stroke-opacity=".16" stroke-width=".6"/>
-      <circle cx="200" cy="200" r="138" fill="none" stroke="#C98A86" stroke-opacity=".08" stroke-width=".6" stroke-dasharray="1 5"/>
-      <g class="spin">
-        <circle class="hero__planet-hit" id="wishPlanet" cx="200" cy="10" r="11" fill="transparent"><title>Make a wish</title></circle>
-        <circle class="hero__planet-pulse" cx="200" cy="10" r="2.6" fill="none" stroke="#D7C39B"/>
-        <circle class="hero__planet" cx="200" cy="10" r="2.6" fill="#D7C39B" fill-opacity=".9"/>
-      </g>
-    </svg>
-    <blockquote class="hero__quote">
-      <p>“Actions are judged by intentions.”</p>
-      <p lang="ar" dir="rtl">إنّما الأعمال بالنيّات</p>
-    </blockquote>
-    <div class="hero__aside">
-      <p class="hero__roles">UX/UI<span class="dot" aria-hidden="true">·</span>Graphic Design<span class="dot" aria-hidden="true">·</span>Illustration</p>
-      <p class="hero__intro">I’m a GBDA student at the University of Waterloo, creating designs that look good, feel intuitive, and don’t make users question their life choices.</p>
-    </div>
-    <p class="hero__moon" id="moonCaption"></p>
-    </div>
-
     <h1 class="hero__title" id="hero-title">
       <span class="sr-only">Hafsa Abbasi, designer and illustrator</span>
       <span class="hero__name" aria-hidden="true">Designer and illustrator</span>
@@ -89,6 +59,26 @@
         <span class="line line--serif">Abbasi</span>
       </span>
     </h1>
+
+    <div class="hero__side">
+      <blockquote class="hero__quote">
+        <p>“Actions are judged by intentions.”</p>
+        <p lang="ar" dir="rtl">إنّما الأعمال بالنيّات</p>
+      </blockquote>
+      <p class="hero__roles">UX/UI<span class="dot" aria-hidden="true">·</span>Graphic Design<span class="dot" aria-hidden="true">·</span>Illustration</p>
+      <p class="hero__intro">I’m a GBDA student at the University of Waterloo, creating designs that look good, feel intuitive, and don’t make users question their life choices.</p>
+
+      <div class="hero__moon">
+        <button class="hero__moon-btn" id="wishPlanet" type="button" title="Make a wish" aria-label="Tonight’s moon. Click to make a wish.">
+          <svg viewBox="0 0 400 400" aria-hidden="true">
+            <circle cx="200" cy="200" r="190" fill="#350A12" stroke="#EFDFD2" stroke-opacity=".35" stroke-width="10"/>
+            <!-- lit part of tonight's moon; shape is set by the script -->
+            <path id="moonLit" fill="#EFDFD2" fill-opacity=".92" d=""/>
+          </svg>
+        </button>
+        <p id="moonCaption"></p>
+      </div>
+    </div>
 
     <a class="hero__scroll" href="#about">
       <span class="hero__scroll-line" aria-hidden="true"></span>

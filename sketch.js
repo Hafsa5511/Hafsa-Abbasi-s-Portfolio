@@ -391,7 +391,7 @@ const SKY = {
     star.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     root.classList.add('cursor-on');
     const t = e.target;
-    const hover = !!t.closest('a, button, .hero__planet-hit');
+    const hover = !!t.closest('a, button');
     const light = !!t.closest('[data-cursor="light"]');
     ring.classList.toggle('is-hover', hover); star.classList.toggle('is-hover', hover);
     ring.classList.toggle('is-light', light); star.classList.toggle('is-light', light);
