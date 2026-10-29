@@ -514,3 +514,36 @@ const FLOWER_GRID = {
   window.addEventListener('resize', layout);
   if ('ResizeObserver' in window) new ResizeObserver(layout).observe(holder);
 })();
+/* ═══════════════════════════════════════════════════════
+   SCROLL REVEAL — things rise in when you scroll down to them,
+   drop in when you scroll back up, and ease out as they leave
+   ═══════════════════════════════════════════════════════ */
+const REVEAL = {
+  // what animates (the hero has its own entrance, so it's left out)
+  selector: '.about__heading, .about__body > *, .about__figure, .section-head, .work, .works__note, .gallery__text, .print, .footer__heading, .footer__mail, .footer__hint',
+  distance: 48,     // px they travel
+  stagger: .08,     // seconds between neighbours
+};
+(function reveal() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  const els = [...document.querySelectorAll(REVEAL.selector)];
+  els.forEach(el => {
+    el.classList.add('reveal');
+    // small stagger between siblings that reveal together
+    const sibs = [...el.parentElement.children].filter(c => c.matches(REVEAL.selector));
+    el.style.setProperty('--delay', (Math.min(sibs.indexOf(el), 5) * REVEAL.stagger).toFixed(2) + 's');
+  });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const fromAbove = e.boundingClientRect.top < (e.rootBounds ? e.rootBounds.top : 0) + 1;
+      if (e.isIntersecting) {
+        e.target.classList.add('is-in');
+      } else {
+        // set where it should come back from: above if it left off the top, below if off the bottom
+        e.target.style.setProperty('--from', (fromAbove ? -REVEAL.distance : REVEAL.distance) + 'px');
+        e.target.classList.remove('is-in');
+      }
+    });
+  }, { threshold: .12, rootMargin: '0px 0px -6% 0px' });
+  els.forEach(el => io.observe(el));
+})();
