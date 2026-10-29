@@ -592,4 +592,35 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 @media (max-width: 900px) {
   .about__figure { grid-column: 1 / -1; max-width: none; }
   .about__photo { width: 120%; margin-left: 12%; }
+}/* ═══ RUNNING BANNER — a tilted strip of scrolling text across the hero/About seam ═══ */
+.marquee {
+  position: relative; z-index: 2;
+  margin: -1.6rem -3% -1.6rem; padding: .95rem 0;
+  background: var(--burgundy); color: var(--cream);
+  transform: rotate(-1.4deg);
+  overflow: hidden;
+}
+.marquee__track { display: flex; width: max-content; animation: marquee 48s linear infinite; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+.marquee__set { display: flex; align-items: center; gap: 1.6rem; padding-right: 1.6rem; white-space: nowrap; }
+.marquee__set span { font: 700 clamp(1rem, 1.8vw, 1.45rem)/1 var(--font-display); text-transform: uppercase; letter-spacing: .01em; }
+.marquee__set em { font: italic 400 clamp(1.2rem, 2.2vw, 1.75rem)/1 var(--font-serif); }
+.marquee__set i { font-style: normal; color: var(--gold); font-size: .9em; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.sticker--lily { z-index: 4; }   /* the lily sits on top of the banner */
+
+/* ═══ PIXELATING WORD — the end of the About heading breaks into pixels ═══ */
+.pixelate { position: relative; display: inline-block; }
+.pixelate .px { position: absolute; pointer-events: none; transition: transform 1.6s var(--ease), opacity 1.1s ease; }
+.pixelate .px--cover { background: var(--cream); opacity: 0; }        /* erases bits of the letters */
+.pixelate .px--ink { background: currentColor; opacity: 0; }          /* the pixels that drift away */
+.pixelate.is-broken .px--cover { opacity: 1; }
+.pixelate.is-broken .px--ink { opacity: 1; transform: var(--to); }
+
+/* ═══ About grid: squares fly in and click into place when the section scrolls into view ═══ */
+.about__tiles .tile { transition: transform 1.3s var(--ease), opacity 1s ease; transition-delay: var(--d, 0s); }
+.about__photo.is-scattered .tile { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(.35); }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
 }

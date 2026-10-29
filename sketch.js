@@ -443,34 +443,42 @@ document.getElementById('year').textContent = new Date().getFullYear();
    FLOWER GRID — the About photo: big squares that run off the
    right edge and break apart into loose pixels on the left
    ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   FLOWER GRID — the About photo: big squares that run off the
+   right edge and break apart into loose pixels on the left.
+   The squares fly in and click into place when you scroll to it.
+   ═══════════════════════════════════════════════════════ */
 const FLOWER_GRID = {
   cols: 6, rows: 4,       // fewer, bigger squares (the grid's shape follows these: 6 × 4 = 3:2)
   // squares that break away: number: [x, y, size] — x/y in square-widths (negative x = left), size 1 = full
   scatter: { 0: [-0.5, -0.2, .5], 1: [-0.15, -0.55, .26], 13: [-0.05, 0.05, .2], 18: [-0.4, 0.3, .45] },
   pixels: 8,              // tiny loose squares drifting off the left edge
   pixelReach: .85,        // how far left they spread, in square-widths
+  flyIn: true,            // false = no scroll-in animation
 };
 (function flowerGrid() {
   const photo = document.getElementById('aboutPhoto');
   const holder = document.getElementById('aboutTiles');
   if (!photo || !holder) return;
-  const { cols, rows, scatter, pixels, pixelReach } = FLOWER_GRID;
+  const { cols, rows, scatter, pixels, pixelReach, flyIn } = FLOWER_GRID;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   photo.style.aspectRatio = `${cols} / ${rows}`;
   holder.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
   holder.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
   const tiles = [];
   for (let i = 0; i < cols * rows; i++) {
     const t = document.createElement('span');
     t.className = 'tile';
+    t.style.setProperty('--d', (rnd() * .55).toFixed(2) + 's');
     holder.appendChild(t);
     tiles.push(t);
   }
-  // tiny pixels, placed the same way every time
-  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
   const dust = Array.from({ length: pixels }, () => {
     const p = document.createElement('span');
     p.className = 'tile pixel';
+    p.style.setProperty('--d', (.8 + rnd() * .6).toFixed(2) + 's');   // the loose pixels arrive last
     holder.appendChild(p);
     return { el: p, x: -pixelReach + rnd() * (pixelReach + .15), y: .4 + rnd() * (rows - .9), size: .06 + rnd() * .13 };
   });
@@ -499,6 +507,10 @@ const FLOWER_GRID = {
       t.style.setProperty('--tx', s ? s[0] * tw + 'px' : '0px');
       t.style.setProperty('--ty', s ? s[1] * th + 'px' : '0px');
       t.style.setProperty('--s', s ? s[2] : 1);
+      // where it starts before flying in: pushed out from the grid's centre
+      const fx = (c - cols / 2 + .5) * tw * .6 + tw * .8, fy = (r - rows / 2 + .5) * th * .9;
+      t.style.setProperty('--sx', fx + 'px');
+      t.style.setProperty('--sy', fy + 'px');
     });
     dust.forEach(d => {
       const size = d.size * tw, x = d.x * tw, y = d.y * th;
@@ -509,4 +521,70 @@ const FLOWER_GRID = {
   }
   window.addEventListener('resize', layout);
   if ('ResizeObserver' in window) new ResizeObserver(layout).observe(holder);
+
+  // fly in once, when the grid scrolls into view
+  if (flyIn && !reduce && 'IntersectionObserver' in window) {
+    photo.classList.add('is-scattered');
+    const io = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { photo.classList.remove('is-scattered'); io.disconnect(); }
+    }, { threshold: .25 });
+    io.observe(photo);
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════
+   PIXELATING WORD — the word wrapped in data-pixelate breaks
+   apart on its right side and drifts off as pixels
+   ═══════════════════════════════════════════════════════ */
+const PIXEL_WORD = {
+  start: .62,       // where the breaking starts (0 = left edge of the word, 1 = right edge)
+  cell: .1,         // pixel size, as a fraction of the font size
+  drift: 1.9,       // how far the pixels travel, in em
+  maxPixels: 34,    // how many loose pixels at most
+};
+(function pixelWord() {
+  const el = document.querySelector('[data-pixelate]');
+  if (!el) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function build() {
+    el.querySelectorAll('.px').forEach(p => p.remove());
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    const cell = Math.max(4, Math.round(fs * PIXEL_WORD.cell));
+    const w = el.offsetWidth, h = el.offsetHeight;
+    const cols = Math.ceil(w / cell), rows = Math.ceil(h / cell);
+    let seed = 11; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    let inks = 0;
+    for (let c = 0; c < cols; c++) {
+      const t = (c * cell / w - PIXEL_WORD.start) / (1 - PIXEL_WORD.start);   // 0 → 1 across the breaking part
+      if (t <= 0) continue;
+      for (let r = 0; r < rows; r++) {
+        if (rnd() > Math.pow(t, 1.6) * .7) continue;
+        const cover = document.createElement('span');
+        cover.className = 'px px--cover';
+        Object.assign(cover.style, { left: c * cell - .5 + 'px', top: r * cell - .5 + 'px', width: cell + 1 + 'px', height: cell + 1 + 'px' });
+        el.appendChild(cover);
+        if (inks >= PIXEL_WORD.maxPixels || rnd() > .55) continue;
+        const ink = document.createElement('span');
+        ink.className = 'px px--ink';
+        const size = cell * (rnd() < .2 ? 1.6 : 1 - rnd() * .45);
+        const dx = (.15 + t * PIXEL_WORD.drift + rnd() * .6) * fs, dy = (rnd() - .62) * .55 * fs;
+        Object.assign(ink.style, { left: c * cell + 'px', top: r * cell + 'px', width: size + 'px', height: size + 'px', transitionDelay: (.2 + t * .5 + rnd() * .3).toFixed(2) + 's' });
+        ink.style.setProperty('--to', `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`);
+        el.appendChild(ink);
+        inks++;
+      }
+    }
+  }
+  build();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); if (done) el.classList.add('is-broken'); }, 200); });
+  if (document.fonts) document.fonts.ready.then(build);
+
+  let done = false;
+  const breakApart = () => { done = true; el.classList.add('is-broken'); };
+  if (reduce || !('IntersectionObserver' in window)) return breakApart();
+  const io = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { breakApart(); io.disconnect(); }
+  }, { threshold: .6 });
+  io.observe(el);
 })();
